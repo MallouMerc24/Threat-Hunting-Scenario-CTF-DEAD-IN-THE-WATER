@@ -18,7 +18,10 @@ One week after an initial compromise, the organization returns from the weekend 
 - **Primary Focus:** Backup infrastructure compromise and ransomware deployment
 
   ---
-  
+
+## 🐧 PHASE 1: LINUX BACKUP SERVER COMPROMISE (FLAGS 1-12)
+
+  ---
 ##  🚩 Flag 1: Lateral Movement - Remote Access 
 
 **Objective**: Identify the remote access command used to pivot into backup infrastructure.
@@ -34,7 +37,7 @@ DeviceProcessEvents
 | where FileName == "ssh.exe"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
-| order by Timestamp dsc
+| order by Timestamp asc
 ```
 
 **Notes:** This SSH connection represents the attacker’s pivot from a compromised workstation into critical backup infrastructure.
@@ -44,6 +47,24 @@ DeviceProcessEvents
 ##  🚩 Flag 2: Attack Source Identification
 
 **Objective**: Identify the IP address that initiated the SSH connection.
+
+Under MITRE ATT&CK T1021.004 (Remote Services: SSH), investigation identified 10.1.0.108 as the source IP that initiated the SSH connection. This activity was recorded at 2025-11-25T05:39:22.191096Z, indicating authenticated remote access consistent with lateral movement behavior.
+
+<img width="760" height="31" alt="image" src="https://github.com/user-attachments/assets/138e1def-c17c-4e20-8ed5-61446849318e" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+DeviceLogonEvents
+| where DeviceName contains "BackupSrv"
+| where LogonType == "Network"
+| project Timestamp, DeviceName, RemoteIP, AccountName, ActionType
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| order by Timestamp dsc
+```
+
+**Notes:** Identifying the originating IP allows defenders to isolate the compromised host and understand lateral movement paths.
 
 ---
 
