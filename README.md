@@ -105,6 +105,10 @@ DeviceProcessEvents
 
 Under MITRE ATT&CK T1083 (File and Directory Discovery), the command *find /backups -name *.tar.gz** was executed, indicating that the attacker searched the backup directory for compressed archive files. This activity reflects reconnaissance behavior aimed at identifying valuable backup data for potential exfiltration or destruction.
 
+<img width="806" height="165" alt="image" src="https://github.com/user-attachments/assets/49bbc710-8ecf-48c6-8b13-333912217b27" />
+
+**Notes:** Searching for compressed archives indicates intent to locate high-value backup data.
+
 ---
 
 ##  🚩 Flag 6 – Account Enumeration
