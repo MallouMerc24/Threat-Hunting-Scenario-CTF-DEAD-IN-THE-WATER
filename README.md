@@ -37,7 +37,7 @@ DeviceProcessEvents
 | where FileName == "ssh.exe"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** This SSH connection represents the attacker’s pivot from a compromised workstation into critical backup infrastructure.
@@ -72,10 +72,29 @@ DeviceLogonEvents
 
 **Objective**: Identify the account used to access the backup server.
 
+Under MITRE ATT&CK T1078.002 (Valid Accounts: Domain Accounts), analysis confirmed that the **backup-admin** account was used to access the backup server. The SSH syntax (username@host) directly reveals the compromised administrative account, indicating abuse of valid credentials with elevated backup privileges.
+
 ---
 
 ##  🚩 Flag 4: Directory Enumeration
 
 **Objective**: Determine how attackers identified backup locations.
+
+Under MITRE ATT&CK T1083 (File and Directory Discovery), the command **ls --color=auto -la /backups/** was executed, indicating that the attacker enumerated files and directories within the backup location. This activity occurred at 2025-11-25T05:47:51.749736Z and reflects reconnaissance efforts to identify accessible backup data and assess its contents.
+
+<img width="783" height="180" alt="image" src="https://github.com/user-attachments/assets/43c4fea3-f68b-432a-a73e-110d1fd36fdb" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "Backupsrv"
+| where ActionType == "ProcessCreated"
+| where FileName == "ls"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| order by Timestamp desc
+```
+
+**Notes:** This command confirms attackers were mapping backup locations to identify targets for destruction.
 
 ---
