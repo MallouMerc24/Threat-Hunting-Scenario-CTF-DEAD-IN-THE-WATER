@@ -8,3 +8,17 @@ One week after an initial compromise, the organization returns from the weekend 
 - Destroyed recovery data
 - Rapidly deployed ransomware across Windows systems
 - Disabled every viable recovery mechanism
+
+---
+
+## 🛠️ Investigation Environment
+
+- **SIEM Platform:**: Microsoft Log Analytics Workspace  
+- **Query Language:**: Kusto Query Language (KQL)
+- **Primary Focus**: Backup infrastructure compromise and ransomware deployment
+
+  ---
+  
+##  🚩 Flag 1: Lateral Movement - Remote Access 
+
+**Objective**: Identify the remote access command used to pivot into backup infrastructure.
