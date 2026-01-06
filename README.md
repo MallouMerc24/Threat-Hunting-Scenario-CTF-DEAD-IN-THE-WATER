@@ -107,6 +107,18 @@ Under MITRE ATT&CK T1083 (File and Directory Discovery), the command *find /back
 
 <img width="806" height="165" alt="image" src="https://github.com/user-attachments/assets/49bbc710-8ecf-48c6-8b13-333912217b27" />
 
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where FileName == "find"
+| where ProcessCommandLine has_any ("tar", ".tar", ".tar.gz", ".tgz")
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| order by Timestamp dsc
+```
+
 **Notes:** Searching for compressed archives indicates intent to locate high-value backup data.
 
 ---
