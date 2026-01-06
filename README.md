@@ -98,3 +98,29 @@ DeviceProcessEvents
 **Notes:** This command confirms attackers were mapping backup locations to identify targets for destruction.
 
 ---
+
+##  🚩 Flag 5: Backup Archive Discovery
+
+**Objective**: Identify how attackers searched for backup archives.
+
+Under MITRE ATT&CK T1083 (File and Directory Discovery), the command *find /backups -name *.tar.gz** was executed, indicating that the attacker searched the backup directory for compressed archive files. This activity reflects reconnaissance behavior aimed at identifying valuable backup data for potential exfiltration or destruction.
+
+---
+
+##  🚩 Flag 6 – Account Enumeration
+
+**Objective**: Identify how local accounts were enumerated.
+
+---
+
+##  🚩 Flag 7: Scheduled Job Reconnaissance
+
+**Objective**: Identify how backup schedules were discovered.
+
+---
+
+##  🚩 Flag 8: External Tool Download
+
+**Objective**: Identify tools downloaded from external infrastructure.
+
+---
