@@ -25,6 +25,8 @@ One week after an initial compromise, the organization returns from the weekend 
 
 Under MITRE ATT&CK T1021.004 (Remote Services: SSH), the command ssh backup-admin@10.1.0.189 was executed, indicating remote access to the backup server using the backup-admin account. This activity occurred at 2025-11-20T14:19:46.1092202Z and reflects lateral movement via authenticated SSH access.
 
+<img width="690" height="28" alt="image" src="https://github.com/user-attachments/assets/e2b51c76-7e7f-4129-ab53-1963c664e701" />
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
