@@ -127,6 +127,12 @@ DeviceProcessEvents
 
 **Objective**: Identify how local accounts were enumerated.
 
+Under MITRE ATT&CK T1087.001 (Account Discovery: Local Accounts), local accounts were enumerated using the command **cat /etc/passwd**. This activity allowed the attacker to list system and user accounts on the host, supporting further reconnaissance and potential privilege escalation.
+
+<img width="943" height="175" alt="image" src="https://github.com/user-attachments/assets/8bb8646e-f82b-449c-b016-cc4fa4786944" />
+
+**Notes:** Enumerating local accounts allows attackers to identify privileged users and potential persistence targets.
+
 ---
 
 ##  🚩 Flag 7: Scheduled Job Reconnaissance
