@@ -404,7 +404,7 @@ DeviceProcessEvents
 
 **Objective**: Certain processes lock files and must be terminated before encryption can succeed.
 
-Under MITRE ATT&CK T1562.001 (Impair Defenses: Disable or Modify Tools), the attacker executed the command taskkill /F /IM sqlservr.exe to forcibly terminate the SQL Server process. Stopping this process released file locks that could interfere with encryption, enabling the ransomware to access and encrypt database files while simultaneously impairing defensive and operational capabilities.
+Under MITRE ATT&CK T1562.001 (Impair Defenses: Disable or Modify Tools), the attacker executed the command **taskkill /F /IM sqlservr.exe** to forcibly terminate the SQL Server process. Stopping this process released file locks that could interfere with encryption, enabling the ransomware to access and encrypt database files while simultaneously impairing defensive and operational capabilities.
 
 <img width="720" height="162" alt="image" src="https://github.com/user-attachments/assets/f25a4031-c242-4c69-9b4b-1191b6b876b9" />
 
@@ -427,7 +427,7 @@ DeviceProcessEvents
 
 **Objective**: Recovery points enable rapid file recovery without external backups.
 
-Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command vssadmin delete shadows /all /quiet, which permanently deleted all Volume Shadow Copy recovery points. This action eliminated local recovery options, significantly hindering system restoration and amplifying the overall impact of the attack.
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **vssadmin delete shadows /all /quiet**, which permanently deleted all Volume Shadow Copy recovery points. This action eliminated local recovery options, significantly hindering system restoration and amplifying the overall impact of the attack.
 
 <img width="785" height="166" alt="image" src="https://github.com/user-attachments/assets/b8554ce6-b1bc-442b-8c25-4cf89c765e28" />
 
@@ -453,7 +453,7 @@ DeviceProcessEvents
 
 **Objective**: Limiting storage prevents new recovery points from being created.
 
-Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command vssadmin resize shadowstorage /for=C: /on=C: /maxsize=401MB, drastically limiting the storage allocated for Volume Shadow Copies. This action prevented the creation of new recovery points, further inhibiting system recovery and increasing the destructive impact of the attack.
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **vssadmin resize shadowstorage /for=C: /on=C: /maxsize=401MB**, drastically limiting the storage allocated for Volume Shadow Copies. This action prevented the creation of new recovery points, further inhibiting system recovery and increasing the destructive impact of the attack.
 
 <img width="688" height="103" alt="image" src="https://github.com/user-attachments/assets/01485089-cd83-4ea3-bf1b-133d13e88431" />
 
@@ -476,7 +476,7 @@ DeviceProcessEvents
 
 **Objective**: Windows recovery features enable automatic system repair after corruption.
 
-Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command bcdedit /set {default} recoveryenabled No, which disabled Windows recovery features. This action prevented automatic system repair following system corruption, further inhibiting recovery and increasing the overall impact of the attack.
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **bcdedit /set {default} recoveryenabled No**, which disabled Windows recovery features. This action prevented automatic system repair following system corruption, further inhibiting recovery and increasing the overall impact of the attack.
 
 <img width="507" height="97" alt="image" src="https://github.com/user-attachments/assets/b1b37d0b-62ef-4e7f-a180-393e3f1d5722" />
 
@@ -500,7 +500,7 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command wbadmin delete catalog -quiet, which deleted the Windows Backup catalog. This action removed records of available restore points and backup versions, further preventing system recovery and amplifying the destructive impact of the attack.
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **wbadmin delete catalog -quiet**, which deleted the Windows Backup catalog. This action removed records of available restore points and backup versions, further preventing system recovery and amplifying the destructive impact of the attack.
 
 <img width="772" height="170" alt="image" src="https://github.com/user-attachments/assets/2b8bfd1c-35fd-4e3d-9b8d-50f229571baf" />
 
@@ -527,7 +527,7 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-Under MITRE ATT&CK T1547.001 (Registry Run Keys / Startup Folder), persistence was established through the creation or modification of the registry value WindowsSecurityHealth. This registry-based mechanism ensured that the malicious component would automatically execute on system startup, allowing the attacker to maintain persistence across reboots.
+Under MITRE ATT&CK T1547.001 (Registry Run Keys / Startup Folder), persistence was established through the creation or modification of the registry value **WindowsSecurityHealth**. This registry-based mechanism ensured that the malicious component would automatically execute on system startup, allowing the attacker to maintain persistence across reboots.
 
 <img width="796" height="102" alt="image" src="https://github.com/user-attachments/assets/3a603379-fd44-4810-991e-a2e8aeb0100a" />
 
@@ -550,7 +550,7 @@ DeviceRegistryEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-Under MITRE ATT&CK T1053.005 (Scheduled Task/Job), persistence was achieved through the creation of a scheduled task named Microsoft\Windows\Security\SecurityHealthService. This task enabled the malicious activity to execute automatically at scheduled intervals or system events, ensuring continued persistence on the affected system.
+Under MITRE ATT&CK T1053.005 (Scheduled Task/Job), persistence was achieved through the creation of a scheduled task named **Microsoft\Windows\Security\SecurityHealthService**. This task enabled the malicious activity to execute automatically at scheduled intervals or system events, ensuring continued persistence on the affected system.
 
 <img width="788" height="141" alt="image" src="https://github.com/user-attachments/assets/80418758-d495-4c69-a0bb-358eb4cb364f" />
 
@@ -576,7 +576,9 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-Under MITRE ATT&CK T1070.004 (Indicator Removal on Host: File Deletion), the attacker executed the command fsutil.exe usn deletejournal /D C: to delete the NTFS USN change journal. This action removed file system change records, hindering forensic analysis and helping the attacker evade detection by erasing indicators of compromise.
+Under MITRE ATT&CK T1070.004 (Indicator Removal on Host: File Deletion), the attacker executed the command **fsutil.exe usn deletejournal /D C:** to delete the NTFS USN change journal. This action removed file system change records, hindering forensic analysis and helping the attacker evade detection by erasing indicators of compromise.
+
+<img width="482" height="102" alt="image" src="https://github.com/user-attachments/assets/e186fdad-67c8-408e-a353-8c59ef9dd5ac" />
 
 **KQL Query**:
 ```kql
@@ -599,7 +601,7 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-Under MITRE ATT&CK T1486 (Data Encrypted for Impact), the ransom note SILENTLYNX_README.txt was identified on affected systems. The presence of this file confirms successful ransomware execution and serves to communicate payment instructions, signaling the completion of the encryption phase and the overall impact of the attack.
+Under MITRE ATT&CK T1486 (Data Encrypted for Impact), the ransom note **SILENTLYNX_README.txt** was identified on affected systems. The presence of this file confirms successful ransomware execution and serves to communicate payment instructions, signaling the completion of the encryption phase and the overall impact of the attack.
 
 <img width="781" height="57" alt="image" src="https://github.com/user-attachments/assets/c4b7d092-5d74-463b-9da2-3ce2fd54c3ff" />
 
