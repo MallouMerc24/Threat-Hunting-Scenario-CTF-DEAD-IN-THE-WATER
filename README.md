@@ -455,6 +455,8 @@ DeviceProcessEvents
 
 Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command vssadmin resize shadowstorage /for=C: /on=C: /maxsize=401MB, drastically limiting the storage allocated for Volume Shadow Copies. This action prevented the creation of new recovery points, further inhibiting system recovery and increasing the destructive impact of the attack.
 
+<img width="688" height="103" alt="image" src="https://github.com/user-attachments/assets/01485089-cd83-4ea3-bf1b-133d13e88431" />
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
@@ -475,6 +477,8 @@ DeviceProcessEvents
 **Objective**: Windows recovery features enable automatic system repair after corruption.
 
 Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command bcdedit /set {default} recoveryenabled No, which disabled Windows recovery features. This action prevented automatic system repair following system corruption, further inhibiting recovery and increasing the overall impact of the attack.
+
+<img width="507" height="97" alt="image" src="https://github.com/user-attachments/assets/b1b37d0b-62ef-4e7f-a180-393e3f1d5722" />
 
 **KQL Query**:
 ```kql
