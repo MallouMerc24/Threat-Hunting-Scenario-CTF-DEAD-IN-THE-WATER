@@ -523,6 +523,8 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
+<img width="796" height="102" alt="image" src="https://github.com/user-attachments/assets/3a603379-fd44-4810-991e-a2e8aeb0100a" />
+
 **KQL Query**:
 ```kql
 DeviceRegistryEvents
@@ -541,6 +543,9 @@ DeviceRegistryEvents
 ##  🚩 Flag 24: Scheduled Task Persistence
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+<img width="788" height="141" alt="image" src="https://github.com/user-attachments/assets/80418758-d495-4c69-a0bb-358eb4cb364f" />
+
 
 **KQL Query**:
 ```kql
@@ -580,6 +585,9 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
+<img width="781" height="57" alt="image" src="https://github.com/user-attachments/assets/c4b7d092-5d74-463b-9da2-3ce2fd54c3ff" />
+
+
 **KQL Query**:
 ```kql
 DeviceFileEvents
@@ -590,6 +598,7 @@ DeviceFileEvents
 | where Timestamp < datetime(2025-12-01)
 | order by Timestamp dsc
 ```
+
 **Notes:** The presence of the ransom note confirms successful encryption across systems.
 
 ---
