@@ -512,9 +512,84 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp dsc
+| order by Timestamp asc
 ```
 
 **Notes:** Terminating processes unlocks files for encryption.
+
+---
+
+##  🚩 Flag 23: Registry Persistence
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+**KQL Query**:
+```kql
+DeviceRegistryEvents
+| where DeviceName == "azuki-adminpc"
+| where RegistryKey has @"CurrentVersion\Run"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, RegistryKey, RegistryValueName, RegistryValueData
+| order by Timestamp asc
+```
+
+**Notes:** Registry autoruns ensure malware execution on startup.
+
+---
+
+##  🚩 Flag 24: Scheduled Task Persistence
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "schtasks.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Scheduled tasks provide reliable, long-term persistence.
+
+---
+
+##  🚩 Flag 25: Anti-Forensics
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "fsutil.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:** Deleting the USN journal removes forensic evidence of file changes.
+
+---
+
+##  🚩 Flag 26: Ransom Note
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+**KQL Query**:
+```kql
+DeviceFileEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName endswith ".txt"
+| where ActionType == "FileCreated"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| order by Timestamp dsc
+```
+**Notes:** The presence of the ransom note confirms successful encryption across systems.
 
 ---
