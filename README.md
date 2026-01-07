@@ -569,6 +569,9 @@ DeviceProcessEvents
 
 ---
 
+## 🧹 PHASE 5: ANTI-FORENSICS (FLAG 25)
+
+---
 ##  🚩 Flag 25: Anti-Forensics
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
@@ -583,13 +586,15 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp dsc
 ```
 
 **Notes:** Deleting the USN journal removes forensic evidence of file changes.
 
 ---
 
+## 💀 PHASE 6: RANSOMWARE SUCCESS (FLAG 26)
+
+---
 ##  🚩 Flag 26: Ransom Note
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
