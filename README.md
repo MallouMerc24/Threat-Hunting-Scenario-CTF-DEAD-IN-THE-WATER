@@ -617,3 +617,41 @@ DeviceFileEvents
 **Notes:** The presence of the ransom note confirms successful encryption across systems.
 
 ---
+
+## 📌 Conclusion
+
+- This was a deliberate, staged ransomware attack focused on eliminating recovery before encryption.
+
+- Attackers used valid credentials to move laterally via SSH into the Linux backup server.
+
+- They performed targeted discovery to identify backups, schedules, and stored credentials.
+
+- Backup data and recovery services were destroyed or disabled to prevent restoration.
+
+- Ransomware was deployed rapidly across Windows systems using PsExec.
+
+- Prior to encryption, attackers disabled all recovery mechanisms, including shadow copies, restore points, and backup catalogs.
+
+- Persistence was established via registry autoruns and scheduled tasks.
+
+- Forensic evidence was erased by deleting the NTFS USN journal.
+
+- Encryption occurred only after recovery paths were neutralized, maximizing operational impact.
+
+---
+
+## 🧑‍💼 Executive Summary 
+
+## How did they get to our backup infrastructure?
+The attackers used a compromised administrative account to connect to the backup server over SSH. This allowed them to pivot directly from an infected workstation into the systems responsible for backups and recovery.
+
+## What exactly did they destroy?
+They deleted backup archives, erased backup configuration files, disabled and stopped backup services, removed Windows backup catalogs, deleted shadow copies and restore points, and disabled system recovery features. These actions collectively eliminated all practical recovery options.
+
+## How did the ransomware spread so fast?
+Ransomware was deployed using PsExec, a legitimate remote administration tool that allows attackers to execute malware simultaneously across multiple Windows systems using stolen credentials.
+
+## Can we recover?
+Recovery is extremely limited. Backups, restore points, and recovery services were intentionally destroyed or disabled prior to encryption. Without clean offline or immutable backups that were not connected to the environment, full system restoration is unlikely.
+
+
