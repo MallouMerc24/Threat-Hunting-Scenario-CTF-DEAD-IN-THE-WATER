@@ -371,7 +371,7 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** Stopping VSS prevents restoration from shadow copies.
@@ -393,7 +393,7 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** This prevents Windows Backup from functioning during encryption.
@@ -416,7 +416,7 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** Terminating processes unlocks files for encryption.
@@ -427,18 +427,24 @@ DeviceProcessEvents
 
 **Objective**: Recovery points enable rapid file recovery without external backups.
 
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command vssadmin delete shadows /all /quiet, which permanently deleted all Volume Shadow Copy recovery points. This action eliminated local recovery options, significantly hindering system restoration and amplifying the overall impact of the attack.
+
+<img width="785" height="166" alt="image" src="https://github.com/user-attachments/assets/b8554ce6-b1bc-442b-8c25-4cf89c765e28" />
+
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
-| where DeviceName == "azuki-adminpc"
-| where FileName =~ "taskkill.exe"
+| where DeviceName contains "admin" 
+| where FileName =~ "vssadmin.exe"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
-**Notes:** Terminating processes unlocks files for encryption.
+**Notes:** Deletes all existing restore points silently.
+
 
 
 ---
@@ -447,18 +453,20 @@ DeviceProcessEvents
 
 **Objective**: Limiting storage prevents new recovery points from being created.
 
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command vssadmin resize shadowstorage /for=C: /on=C: /maxsize=401MB, drastically limiting the storage allocated for Volume Shadow Copies. This action prevented the creation of new recovery points, further inhibiting system recovery and increasing the destructive impact of the attack.
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
-| where DeviceName == "azuki-adminpc"
-| where FileName =~ "taskkill.exe"
+| where FileName =~ "vssadmin.exe"
+| where ProcessCommandLine has "resize"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
-**Notes:** Terminating processes unlocks files for encryption.
+**Notes:** Disables Windows recovery options entirely.
 
 ---
 
@@ -466,15 +474,18 @@ DeviceProcessEvents
 
 **Objective**: Windows recovery features enable automatic system repair after corruption.
 
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command bcdedit /set {default} recoveryenabled No, which disabled Windows recovery features. This action prevented automatic system repair following system corruption, further inhibiting recovery and increasing the overall impact of the attack.
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
-| where FileName =~ "taskkill.exe"
+| where FileName =~ "bcdedit.exe"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
+
 ```
 
 **Notes:** Terminating processes unlocks files for encryption.
@@ -485,15 +496,19 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command wbadmin delete catalog -quiet, which deleted the Windows Backup catalog. This action removed records of available restore points and backup versions, further preventing system recovery and amplifying the destructive impact of the attack.
+
+<img width="772" height="170" alt="image" src="https://github.com/user-attachments/assets/2b8bfd1c-35fd-4e3d-9b8d-50f229571baf" />
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
 | where DeviceName == "azuki-adminpc"
-| where FileName =~ "taskkill.exe"
+| where FileName =~ "wbadmin.exe"
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:** Terminating processes unlocks files for encryption.
