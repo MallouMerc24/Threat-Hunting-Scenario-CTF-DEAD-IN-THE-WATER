@@ -519,9 +519,15 @@ DeviceProcessEvents
 
 ---
 
+## 🔒 PHASE 4: PERSISTENCE (FLAGS 23-24)
+
+---
+
 ##  🚩 Flag 23: Registry Persistence
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+Under MITRE ATT&CK T1547.001 (Registry Run Keys / Startup Folder), persistence was established through the creation or modification of the registry value WindowsSecurityHealth. This registry-based mechanism ensured that the malicious component would automatically execute on system startup, allowing the attacker to maintain persistence across reboots.
 
 <img width="796" height="102" alt="image" src="https://github.com/user-attachments/assets/3a603379-fd44-4810-991e-a2e8aeb0100a" />
 
@@ -544,8 +550,9 @@ DeviceRegistryEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-<img width="788" height="141" alt="image" src="https://github.com/user-attachments/assets/80418758-d495-4c69-a0bb-358eb4cb364f" />
+Under MITRE ATT&CK T1053.005 (Scheduled Task/Job), persistence was achieved through the creation of a scheduled task named Microsoft\Windows\Security\SecurityHealthService. This task enabled the malicious activity to execute automatically at scheduled intervals or system events, ensuring continued persistence on the affected system.
 
+<img width="788" height="141" alt="image" src="https://github.com/user-attachments/assets/80418758-d495-4c69-a0bb-358eb4cb364f" />
 
 **KQL Query**:
 ```kql
@@ -566,6 +573,8 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
+Under MITRE ATT&CK T1070.004 (Indicator Removal on Host: File Deletion), the attacker executed the command fsutil.exe usn deletejournal /D C: to delete the NTFS USN change journal. This action removed file system change records, hindering forensic analysis and helping the attacker evade detection by erasing indicators of compromise.
+
 **KQL Query**:
 ```kql
 DeviceProcessEvents
@@ -585,8 +594,9 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
-<img width="781" height="57" alt="image" src="https://github.com/user-attachments/assets/c4b7d092-5d74-463b-9da2-3ce2fd54c3ff" />
+Under MITRE ATT&CK T1486 (Data Encrypted for Impact), the ransom note SILENTLYNX_README.txt was identified on affected systems. The presence of this file confirms successful ransomware execution and serves to communicate payment instructions, signaling the completion of the encryption phase and the overall impact of the attack.
 
+<img width="781" height="57" alt="image" src="https://github.com/user-attachments/assets/c4b7d092-5d74-463b-9da2-3ce2fd54c3ff" />
 
 **KQL Query**:
 ```kql
