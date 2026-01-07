@@ -305,9 +305,60 @@ DeviceProcessEvents
 | where Timestamp >= datetime(2025-11-01)
 | where Timestamp < datetime(2025-12-01)
 | project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
-| order by Timestamp asc
+| order by Timestamp dsc
 ```
 
 **Notes:**  Disabling the service ensured backups would not resume after reboot.
+
+---
+
+##  🚩 Flag 14: Deployment Command
+
+**Objective**: Identify the full ransomware deployment command.
+
+Under MITRE ATT&CK T1021.002 (Remote Services: SMB / Windows Admin Shares), the full ransomware deployment command was identified as
+**PsExec64.exe \\10.1.0.102 -u kenji.sato -p ******** -c -f C:\Windows\Temp\cache\silentlynx.exe**.
+This command demonstrates the use of PsExec to remotely execute the ransomware payload on the target host 10.1.0.102 via SMB administrative shares, leveraging compromised credentials to copy and forcibly run the malicious executable.
+
+<img width="682" height="120" alt="image" src="https://github.com/user-attachments/assets/37517bda-227a-4a6c-b49d-d031bd021050" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where FileName startswith "PsExec"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+
+**Notes:** The command reveals the target system, compromised credentials, and deployed ransomware payload.
+
+---
+
+##  🚩 Flag 15: Malicious Payload
+
+**Objective**: Identifying the payload enables threat hunting across the environment.
+
+Identifying the payload enables effective threat hunting across the environment. Under MITRE ATT&CK T1204.002 (User Execution: Malicious File), analysis confirmed that the deployed payload was silentlynx.exe, which was executed as part of the attack chain to carry out malicious activity across affected systems.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where FileName startswith "PsExec"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
+| order by Timestamp dsc
+```
+---
+
+## 🔥 PHASE 3: RECOVERY INHIBITION (FLAGS 16-22)
+
+---
+##  🚩 Flag 16: Shadow Copy Service Stopped
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
 
 ---
