@@ -340,7 +340,7 @@ DeviceProcessEvents
 
 **Objective**: Identifying the payload enables threat hunting across the environment.
 
-Identifying the payload enables effective threat hunting across the environment. Under MITRE ATT&CK T1204.002 (User Execution: Malicious File), analysis confirmed that the deployed payload was silentlynx.exe, which was executed as part of the attack chain to carry out malicious activity across affected systems.
+Identifying the payload enables effective threat hunting across the environment. Under MITRE ATT&CK T1204.002 (User Execution: Malicious File), analysis confirmed that the deployed payload was **silentlynx.exe**, which was executed as part of the attack chain to carry out malicious activity across affected systems.
 
 **KQL Query**:
 ```kql
@@ -360,5 +360,142 @@ DeviceProcessEvents
 
 **Objective**: Ransomware stops backup services to prevent recovery during encryption.
 
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **net stop VSS /y**, forcibly stopping the Volume Shadow Copy Service. This action prevented the creation and use of shadow copies, effectively inhibiting system recovery and hindering restoration efforts following the attack.
+
+<img width="795" height="156" alt="image" src="https://github.com/user-attachments/assets/77724f6a-fe4f-4ece-b6da-4a7310434a55" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where ProcessCommandLine has_all ("net", "stop", "vss")
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Stopping VSS prevents restoration from shadow copies.
+
+---
+
+##  🚩 Flag 17: Backup Engine Stopped
+
+**Objective**: Stopping backup engines prevents backup operations during the attack.
+
+Under MITRE ATT&CK T1490 (Inhibit System Recovery), the attacker executed the command **net stop wbengine /y** , which stopped the Windows Backup Engine service. This action disrupted backup operations and further inhibited system recovery, increasing the impact of the attack by preventing restoration from recent backups.
+
+<img width="785" height="166" alt="image" src="https://github.com/user-attachments/assets/d36004b8-9d13-4b60-9918-8e3fcecb770b" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where ProcessCommandLine has_all ("net", "stop", "wbengine")
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** This prevents Windows Backup from functioning during encryption.
+
+---
+
+##  🚩 Flag 18: Process Termination
+
+**Objective**: Certain processes lock files and must be terminated before encryption can succeed.
+
+Under MITRE ATT&CK T1562.001 (Impair Defenses: Disable or Modify Tools), the attacker executed the command taskkill /F /IM sqlservr.exe to forcibly terminate the SQL Server process. Stopping this process released file locks that could interfere with encryption, enabling the ransomware to access and encrypt database files while simultaneously impairing defensive and operational capabilities.
+
+<img width="720" height="162" alt="image" src="https://github.com/user-attachments/assets/f25a4031-c242-4c69-9b4b-1191b6b876b9" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "taskkill.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Terminating processes unlocks files for encryption.
+
+---
+
+##  🚩 Flag 19: Recovery Point Deletion
+
+**Objective**: Recovery points enable rapid file recovery without external backups.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "taskkill.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Terminating processes unlocks files for encryption.
+
+
+---
+
+##  🚩 Flag 20: Recovery Storage Limited
+
+**Objective**: Limiting storage prevents new recovery points from being created.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "taskkill.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Terminating processes unlocks files for encryption.
+
+---
+
+##  🚩 Flag 21: System Recovery Disabled
+
+**Objective**: Windows recovery features enable automatic system repair after corruption.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "taskkill.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Terminating processes unlocks files for encryption.
+
+---
+
+##  🚩 Flag 22: Backup Catalog Deleted
+
+**Objective**: Ransomware stops backup services to prevent recovery during encryption.
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where FileName =~ "taskkill.exe"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Terminating processes unlocks files for encryption.
 
 ---
